@@ -4,12 +4,26 @@ const app = express();
 const mongoose = require('mongoose');
 
 const morgan = require("morgan");
+const path = require('path'); // This is required to resolve the file path
+
 require("dotenv").config();
 
 const cors = require("cors");
 const Person = require("./models/person");
 
 const PORT = process.env.PORT || 3001;
+const MONGODB_URI = process.env.MONGODB_URI;
+app.use(express.static('build')); // Serve static files from the build folder
+
+mongoose
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error.message);
+  });
+
 
 app.use(cors())
 app.use(express.json())
@@ -69,7 +83,7 @@ app.delete("/api/persons/:id", (req, res, next) => {
 app.put("/api/persons/:id", (req, res, next) => {
   const { name, number } = req.body;
 
-  Person.findByIdAndUpdate(
+  Person.findByIdAndUpdate( 
     req.params.id, 
     { name, number },
     { new: true, runValidators: true, context: 'query' }
@@ -103,6 +117,11 @@ app.get("/info", (req, res, next) => {
     res.send(`Phonebook has info for ${personEntry.length} people.\n ${Date()}`);
   })
   .catch((error) => next(error));
+});
+
+// Wildcard route to serve the frontend (React) for any other requests
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
 });
 
 const errorHandler = (error, request, response, next) => {
