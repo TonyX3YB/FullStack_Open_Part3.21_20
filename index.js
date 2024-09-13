@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(morgan("tiny"));
 
 // Serve static files from the 'frontend/build' directory
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.resolve(__dirname, 'build')));
 
 // Custom token for morgan to log the request body for POST requests
 morgan.token("req-body", (req) => { 
@@ -122,7 +122,7 @@ app.get("/info", (req, res, next) => {
 
 // Wildcard route to serve the frontend (React) for any other requests
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
 });
 
 // Error handling middleware
