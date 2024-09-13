@@ -1,14 +1,14 @@
 // THIS IS THE BACKEND SERVER
-const express = require('express');
+const express = import('express');
 const app = express();
-const mongoose = require('mongoose');
-const morgan = require("morgan");
-const path = require('path'); // This is required to resolve the file path
+const mongoose = import('mongoose');
+const morgan = import("morgan");
+const path = import('path'); // This is required to resolve the file path
 
-require("dotenv").config();
+import("dotenv").config();
 
-const cors = require("cors");
-const Person = require("./models/person");
+const cors = import("cors");
+const Person = import("./models/person");
 
 const PORT = process.env.PORT || 3001;
 const MONGODB_URI = process.env.MONGODB_URI;
